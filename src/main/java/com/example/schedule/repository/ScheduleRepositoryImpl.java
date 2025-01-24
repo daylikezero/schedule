@@ -59,10 +59,11 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
                 params.add(dto.getAuthorId());
             }
             if (dto.getModDate() != null) {
-                sql += " AND s.modDate < ? ORDER BY s.modDate DESC";
+                sql += " AND s.modDate < ?";
                 params.add(dto.getModDate().plusDays(1));
             }
         }
+        sql += " ORDER BY s.modDate DESC";
         log.info("sql = {}", sql);
         return jdbcTemplate.query(sql, scheduleRowMapper(), params.toArray());
     }
