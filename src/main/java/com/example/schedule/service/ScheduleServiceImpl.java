@@ -25,13 +25,13 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public ScheduleResponseDto createSchedule(ScheduleRequestDto dto) {
+    public ScheduleResponseDto saveSchedule(ScheduleRequestDto dto) {
         // 일정 작성 시 사용자 DB 에서 작성자 id 조회
-        User user = userRepository.getUserByName(dto.getAuthor());
+        User user = userRepository.findUserByName(dto.getAuthor());
         // TODO 패스워드 암호화
         Schedule schedule = new Schedule(user.getId(), dto.getTodo(), dto.getPassword());
 
-        return scheduleRepository.createSchedule(schedule, dto.getAuthor());
+        return scheduleRepository.saveSchedule(schedule, dto.getAuthor());
     }
 
     @Override
@@ -40,11 +40,11 @@ public class ScheduleServiceImpl implements ScheduleService {
         Schedule schedule = new Schedule();
 
         if (StringUtils.hasText(dto.getAuthor())) {
-            User user = userRepository.getUserByName(dto.getAuthor());
+            User user = userRepository.findUserByName(dto.getAuthor());
             schedule.setAuthorId(user.getId());
         }
-        if (dto.getDate() != null) {
-            LocalDateTime localDateTime = LocalDateTime.ofInstant(dto.getDate().toInstant(), ZoneId.systemDefault());
+        if (dto.getModDate() != null) {
+            LocalDateTime localDateTime = LocalDateTime.ofInstant(dto.getModDate().toInstant(), ZoneId.systemDefault());
             schedule.setModDate(localDateTime);
         }
         return scheduleRepository.findAllSchedules(schedule);

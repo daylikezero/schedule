@@ -12,6 +12,6 @@ public class ScheduleRequestDto {
     private String todo;
     private String password;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date date;
+    private Date modDate;
 
 }

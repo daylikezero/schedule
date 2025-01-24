@@ -18,12 +18,12 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserResponseDto> createUser(@RequestBody UserRequestDto dto) {
-        return new ResponseEntity<>(userService.createUser(dto), HttpStatus.OK);
+    public ResponseEntity<UserResponseDto> saveUser(@RequestBody UserRequestDto dto) {
+        return new ResponseEntity<>(userService.saveUser(dto), HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<UserResponseDto> getUserByName(@RequestParam String name) {
-        return new ResponseEntity<>(userService.getUserByName(name), HttpStatus.OK);
+    public ResponseEntity<UserResponseDto> findUserByName(@RequestParam String name) {
+        return new ResponseEntity<>(userService.findUserByName(name), HttpStatus.OK);
     }
 }
