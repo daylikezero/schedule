@@ -46,6 +46,11 @@ public class ScheduleServiceImpl implements ScheduleService {
         if (StringUtils.hasText(dto.getAuthor())) {
             try {
                 User user = userRepository.findUserByName(dto.getAuthor());
+                if (dto.getAuthorId() != null) {
+                    if(!user.getId().equals(dto.getAuthorId())) {
+                        return Collections.emptyList();
+                    }
+                }
                 schedule.setAuthorId(user.getId());
             } catch (ResponseStatusException e) {
                 return Collections.emptyList();
@@ -54,6 +59,9 @@ public class ScheduleServiceImpl implements ScheduleService {
         if (dto.getModDate() != null) {
             LocalDateTime localDateTime = LocalDateTime.ofInstant(dto.getModDate().toInstant(), ZoneId.systemDefault());
             schedule.setModDate(localDateTime);
+        }
+        if (dto.getAuthorId() != null) {
+            schedule.setAuthorId(dto.getAuthorId());
         }
         return scheduleRepository.findAllSchedules(schedule);
     }

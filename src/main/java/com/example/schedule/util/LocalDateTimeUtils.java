@@ -6,6 +6,6 @@ import java.time.format.DateTimeFormatter;
 public class LocalDateTimeUtils {
 
     public static String formatToIsoLocalDate(LocalDateTime localDateTime) {
-        return localDateTime.format(DateTimeFormatter.ISO_LOCAL_DATE);
+        return localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 }

@@ -5,6 +5,7 @@ import com.example.schedule.dto.UserResponseDto;
 import com.example.schedule.entity.User;
 import com.example.schedule.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -17,7 +18,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDto saveUser(UserRequestDto dto) {
-        User user = new User(dto.getName(), dto.getEmail());
+        User user = new User(dto.getName());
+        if(StringUtils.hasText(dto.getEmail())) {
+            user.setEmail(dto.getEmail());
+        }
         return userRepository.saveUser(user);
     }
 

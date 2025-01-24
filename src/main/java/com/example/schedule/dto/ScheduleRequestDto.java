@@ -8,6 +8,7 @@ import java.util.Date;
 @Getter
 public class ScheduleRequestDto {
 
+    private Long authorId;
     private String author;
     private String todo;
     private String password;
