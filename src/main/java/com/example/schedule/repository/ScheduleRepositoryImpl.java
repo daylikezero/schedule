@@ -53,16 +53,15 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
                 "WHERE 1=1";
         List<Object> params = new ArrayList<>();
 
-        if (dto.getAuthorId() != null || dto.getModDate() != null) {
-            if (dto.getAuthorId() != null) {
-                sql += " AND s.author_id = ?";
-                params.add(dto.getAuthorId());
-            }
-            if (dto.getModDate() != null) {
-                sql += " AND s.modDate < ?";
-                params.add(dto.getModDate().plusDays(1));
-            }
+        if (dto.getAuthorId() != null) {
+            sql += " AND s.author_id = ?";
+            params.add(dto.getAuthorId());
         }
+        if (dto.getModDate() != null) {
+            sql += " AND s.modDate < ?";
+            params.add(dto.getModDate().plusDays(1));
+        }
+
         sql += " ORDER BY s.modDate DESC";
         log.info("sql = {}", sql);
         return jdbcTemplate.query(sql, scheduleRowMapper(), params.toArray());

@@ -14,6 +14,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -43,8 +44,12 @@ public class ScheduleServiceImpl implements ScheduleService {
         Schedule schedule = new Schedule();
 
         if (StringUtils.hasText(dto.getAuthor())) {
-            User user = userRepository.findUserByName(dto.getAuthor());
-            schedule.setAuthorId(user.getId());
+            try {
+                User user = userRepository.findUserByName(dto.getAuthor());
+                schedule.setAuthorId(user.getId());
+            } catch (ResponseStatusException e) {
+                return Collections.emptyList();
+            }
         }
         if (dto.getModDate() != null) {
             LocalDateTime localDateTime = LocalDateTime.ofInstant(dto.getModDate().toInstant(), ZoneId.systemDefault());
