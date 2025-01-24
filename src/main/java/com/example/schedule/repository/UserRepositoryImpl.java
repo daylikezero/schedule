@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.sql.DataSource;
@@ -33,9 +34,9 @@ public class UserRepositoryImpl implements UserRepository {
 
         Map<String, Object> params = new HashMap<>();
         params.put("name", user.getName());
-        // FIXME email 입력을 하지 않은 경우 조건 분기 필요
-        params.put("email", user.getEmail());
-        // 등록일, 수정일 생성
+        if(StringUtils.hasText(user.getEmail())) {
+            params.put("email", user.getEmail());
+        }
         LocalDateTime now = LocalDateTime.now();
         params.put("regDate", now);
         params.put("modDate", now);
