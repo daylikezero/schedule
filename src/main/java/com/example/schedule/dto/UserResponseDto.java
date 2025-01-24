@@ -4,6 +4,7 @@ import com.example.schedule.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Getter

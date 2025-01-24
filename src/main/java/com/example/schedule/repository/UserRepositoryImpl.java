@@ -46,7 +46,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User getUserByName(String name) {
-        List<User> result = jdbcTemplate.query("select * from user where name = ?", userRowMapper(), name);
+        List<User> result = jdbcTemplate.query("SELECT * FROM user WHERE name = ?", userRowMapper(), name);
         return result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
     }
 

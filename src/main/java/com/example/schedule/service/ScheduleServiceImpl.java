@@ -31,15 +31,14 @@ public class ScheduleServiceImpl implements ScheduleService {
         // TODO 패스워드 암호화
         Schedule schedule = new Schedule(user.getId(), dto.getTodo(), dto.getPassword());
 
-        ScheduleResponseDto returnSchedule = scheduleRepository.createSchedule(schedule, dto.getAuthor());
-        return returnSchedule;
+        return scheduleRepository.createSchedule(schedule, dto.getAuthor());
     }
 
     @Override
     public List<ScheduleResponseDto> findAllSchedules(ScheduleRequestDto dto) {
 
         Schedule schedule = new Schedule();
-        // 사용자가 작성자 명을 조회하는 경우, 작성자 id 조회
+
         if (StringUtils.hasText(dto.getAuthor())) {
             User user = userRepository.getUserByName(dto.getAuthor());
             schedule.setAuthorId(user.getId());
@@ -49,5 +48,11 @@ public class ScheduleServiceImpl implements ScheduleService {
             schedule.setModDate(localDateTime);
         }
         return scheduleRepository.findAllSchedules(schedule);
+    }
+
+    @Override
+    public ScheduleResponseDto findScheduleById(Long id) {
+        Schedule schedule = scheduleRepository.findScheduleById(id);
+        return new ScheduleResponseDto(schedule);
     }
 }
