@@ -1,0 +1,21 @@
+USE schedule;
+
+CREATE TABLE user
+(
+    id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '유저 식별자',
+    name VARCHAR(100) NOT NULL COMMENT '이름',
+    email VARCHAR(100) NOT NULL COMMENT '이메일',
+    regDate TIMESTAMP NOT NULL COMMENT '등록일',
+    modDate TIMESTAMP NOT NULL COMMENT '수정일'
+);
+
+CREATE TABLE schedule
+(
+    id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '일정 식별자',
+    author_id BIGINT COMMENT '작성자',
+    todo VARCHAR(1000) NOT NULL COMMENT '할일',
+    password VARCHAR(100) NOT NULL COMMENT '비밀번호',
+    regDate TIMESTAMP NOT NULL COMMENT '등록일',
+    modDate TIMESTAMP NOT NULL COMMENT '수정일',
+    FOREIGN KEY (author_id) REFERENCES user(id)
+);
