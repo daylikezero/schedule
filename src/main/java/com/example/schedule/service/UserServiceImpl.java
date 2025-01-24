@@ -16,14 +16,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDto createUser(UserRequestDto dto) {
+    public UserResponseDto saveUser(UserRequestDto dto) {
         User user = new User(dto.getName(), dto.getEmail());
-        return userRepository.createUser(user);
+        return userRepository.saveUser(user);
     }
 
     @Override
-    public UserResponseDto getUserByName(String name) {
-        User user = userRepository.getUserByName(name);
+    public UserResponseDto findUserByName(String name) {
+        User user = userRepository.findUserByName(name);
         return new UserResponseDto(user);
     }
 }

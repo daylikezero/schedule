@@ -4,7 +4,7 @@ import com.example.schedule.dto.UserResponseDto;
 import com.example.schedule.entity.User;
 
 public interface UserRepository {
-    UserResponseDto createUser(User user);
+    UserResponseDto saveUser(User user);
 
-    User getUserByName(String name);
+    User findUserByName(String name);
 }

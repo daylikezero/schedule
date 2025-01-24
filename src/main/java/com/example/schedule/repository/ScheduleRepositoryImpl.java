@@ -28,7 +28,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     }
 
     @Override
-    public ScheduleResponseDto createSchedule(Schedule schedule, String author) {
+    public ScheduleResponseDto saveSchedule(Schedule schedule, String author) {
         SimpleJdbcInsert insert = new SimpleJdbcInsert(jdbcTemplate);
         insert.withTableName("schedule").usingGeneratedKeyColumns("id");
 
