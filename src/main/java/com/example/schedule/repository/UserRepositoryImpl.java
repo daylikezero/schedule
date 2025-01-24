@@ -47,7 +47,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User findUserByName(String name) {
         List<User> result = jdbcTemplate.query("SELECT * FROM user WHERE name = ?", userRowMapper(), name);
-        return result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+        return result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with name: " + name));
     }
 
     private RowMapper<User> userRowMapper() {
