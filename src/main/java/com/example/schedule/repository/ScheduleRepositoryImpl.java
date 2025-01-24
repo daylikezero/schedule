@@ -77,6 +77,18 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
         return result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id));
     }
 
+    @Override
+    public int updateSchedule(Long id, Schedule schedule) {
+        String sql = "UPDATE schedule SET author_id = ?, todo = ?, modDate = ? WHERE id = ? AND password = ?";
+        return jdbcTemplate.update(sql, schedule.getAuthorId(), schedule.getTodo(), schedule.getModDate(), id, schedule.getPassword());
+    }
+
+    @Override
+    public int deleteSchedule(Long id, String password) {
+        return jdbcTemplate.update("DELETE FROM schedule WHERE id = ? AND password = ?", id, password);
+    }
+
+
     private RowMapper<Schedule> scheduleRowMapper2() {
         return (rs, rowNum) -> new Schedule(
                 rs.getLong("id"),
