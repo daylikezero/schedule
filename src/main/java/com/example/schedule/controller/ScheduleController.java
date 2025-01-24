@@ -28,4 +28,9 @@ public class ScheduleController {
     public ResponseEntity<List<ScheduleResponseDto>> findAllSchedules(@RequestBody ScheduleRequestDto dto) {
         return new ResponseEntity<>(scheduleService.findAllSchedules(dto), HttpStatus.OK);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ScheduleResponseDto> findScheduleById(@PathVariable Long id) {
+        return new ResponseEntity<>(scheduleService.findScheduleById(id), HttpStatus.OK);
+    }
 }

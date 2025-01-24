@@ -3,10 +3,12 @@ package com.example.schedule.repository;
 import com.example.schedule.dto.ScheduleResponseDto;
 import com.example.schedule.entity.Schedule;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.sql.DataSource;
 import java.time.LocalDateTime;
@@ -34,7 +36,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
         params.put("author_id", schedule.getAuthorId());
         params.put("todo", schedule.getTodo());
         params.put("password", schedule.getPassword());
-        // 등록일, 수정일 생성
+
         LocalDateTime now = LocalDateTime.now();
         params.put("regDate", now);
         params.put("modDate", now);
@@ -45,26 +47,44 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 
     @Override
     public List<ScheduleResponseDto> findAllSchedules(Schedule dto) {
-        // 조건에 따라 동적 sql 생성
-        String sql = "select s.id, u.name as author, s.todo, s.regDate, s.modDate from schedule s join user u on s.author_id = u.id where 1=1";
+        String sql = "SELECT s.id, u.name author, s.todo, s.regDate, s.modDate " +
+                "FROM schedule s " +
+                "JOIN user u ON s.author_id = u.id " +
+                "WHERE 1=1";
         List<Object> params = new ArrayList<>();
 
         if (dto.getAuthorId() != null || dto.getModDate() != null) {
             if (dto.getAuthorId() != null) {
-                sql += " and s.author_id = ?";
+                sql += " AND s.author_id = ?";
                 params.add(dto.getAuthorId());
             }
             if (dto.getModDate() != null) {
-                LocalDateTime from = dto.getModDate();
-                LocalDateTime to = from.plusDays(1);
-                sql += " and s.modDate between ? and ?";
-                params.add(from);
-                params.add(to);
+                sql += " AND s.modDate < ? ORDER BY s.modDate DESC";
+                params.add(dto.getModDate().plusDays(1));
             }
         }
-        log.info("sql={}", sql);
-
+        log.info("sql = {}", sql);
         return jdbcTemplate.query(sql, scheduleRowMapper(), params.toArray());
+    }
+
+    @Override
+    public Schedule findScheduleById(Long id) {
+        List<Schedule> result = jdbcTemplate.query(
+                "SELECT s.id, u.name author, s.todo, s.regDate, s.modDate " +
+                        "FROM schedule s " +
+                        "JOIN user u ON s.author_id = u.id " +
+                        "WHERE s.id = ?", scheduleRowMapper2(), id);
+        return result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id));
+    }
+
+    private RowMapper<Schedule> scheduleRowMapper2() {
+        return (rs, rowNum) -> new Schedule(
+                rs.getLong("id"),
+                rs.getString("author"),
+                rs.getString("todo"),
+                rs.getTimestamp("regDate").toLocalDateTime(),
+                rs.getTimestamp("modDate").toLocalDateTime()
+        );
     }
 
     private RowMapper<ScheduleResponseDto> scheduleRowMapper() {
