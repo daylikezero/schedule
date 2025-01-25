@@ -30,12 +30,12 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public ScheduleResponseDto saveSchedule(ScheduleRequestDto dto) {
-        // 일정 작성 시 사용자 DB 에서 작성자 id 조회
-        User user = userRepository.findUserByName(dto.getAuthor());
+        User user = userRepository.findUserById(dto.getAuthorId());
+
         // TODO 패스워드 암호화
         Schedule schedule = new Schedule(user.getId(), dto.getTodo(), dto.getPassword());
 
-        return scheduleRepository.saveSchedule(schedule, dto.getAuthor());
+        return scheduleRepository.saveSchedule(schedule, user.getName());
     }
 
     @Override
@@ -43,26 +43,20 @@ public class ScheduleServiceImpl implements ScheduleService {
 
         Schedule schedule = new Schedule();
 
-        if (StringUtils.hasText(dto.getAuthor())) {
+        if (dto.getAuthorId() != null) {
             try {
-                User user = userRepository.findUserByName(dto.getAuthor());
-                if (dto.getAuthorId() != null) {
-                    if(!user.getId().equals(dto.getAuthorId())) {
-                        return Collections.emptyList();
-                    }
-                }
+                User user = userRepository.findUserById(dto.getAuthorId());
                 schedule.setAuthorId(user.getId());
             } catch (ResponseStatusException e) {
                 return Collections.emptyList();
             }
         }
+
         if (dto.getModDate() != null) {
             LocalDateTime localDateTime = LocalDateTime.ofInstant(dto.getModDate().toInstant(), ZoneId.systemDefault());
             schedule.setModDate(localDateTime);
         }
-        if (dto.getAuthorId() != null) {
-            schedule.setAuthorId(dto.getAuthorId());
-        }
+
         return scheduleRepository.findAllSchedules(schedule);
     }
 
@@ -76,10 +70,10 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public ScheduleResponseDto updateSchedule(Long id, ScheduleRequestDto dto) {
 
-        if (!StringUtils.hasText(dto.getAuthor()) || !StringUtils.hasText(dto.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "author or password is missing");
+        if (dto.getAuthorId() == null || !StringUtils.hasText(dto.getPassword())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "authorId or password is missing");
         }
-        User user = userRepository.findUserByName(dto.getAuthor());
+        User user = userRepository.findUserById(dto.getAuthorId());
         // TODO 패스워드 암호화
         Schedule schedule = new Schedule(id, user.getId(), dto.getTodo(), dto.getPassword(), LocalDateTime.now());
         int updatedRow = scheduleRepository.updateSchedule(id, schedule);

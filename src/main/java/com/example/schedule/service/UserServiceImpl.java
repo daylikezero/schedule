@@ -7,6 +7,8 @@ import com.example.schedule.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
+
 @Service
 public class UserServiceImpl implements UserService {
 
@@ -26,8 +28,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserResponseDto findUserById(Long id) {
+        User user = userRepository.findUserById(id);
+        return new UserResponseDto(user);
+    }
+
+    @Override
     public UserResponseDto findUserByName(String name) {
         User user = userRepository.findUserByName(name);
         return new UserResponseDto(user);
+    }
+
+    @Override
+    public List<UserResponseDto> findAllUser() {
+        return userRepository.findAllUser();
     }
 }
