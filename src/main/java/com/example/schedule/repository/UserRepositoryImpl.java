@@ -11,8 +11,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.sql.DataSource;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +32,7 @@ public class UserRepositoryImpl implements UserRepository {
 
         Map<String, Object> params = new HashMap<>();
         params.put("name", user.getName());
-        if(StringUtils.hasText(user.getEmail())) {
+        if (StringUtils.hasText(user.getEmail())) {
             params.put("email", user.getEmail());
         }
         LocalDateTime now = LocalDateTime.now();
@@ -46,23 +44,39 @@ public class UserRepositoryImpl implements UserRepository {
     }
 
     @Override
+    public User findUserById(Long id) {
+        List<User> result = jdbcTemplate.query("SELECT * FROM user WHERE id = ?", userRowMapper(), id);
+        return result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id: " + id));
+    }
+
+    @Override
     public User findUserByName(String name) {
         List<User> result = jdbcTemplate.query("SELECT * FROM user WHERE name = ?", userRowMapper(), name);
         return result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with name: " + name));
     }
 
+    @Override
+    public List<UserResponseDto> findAllUser() {
+        return jdbcTemplate.query("select * from user", userResponseRowMapper());
+    }
+
     private RowMapper<User> userRowMapper() {
-        return new RowMapper<User>() {
-            @Override
-            public User mapRow(ResultSet rs, int rowNum) throws SQLException {
-                return new User(
-                        rs.getLong("id"),
-                        rs.getString("name"),
-                        rs.getString("email"),
-                        rs.getTimestamp("regDate").toLocalDateTime(),
-                        rs.getTimestamp("modDate").toLocalDateTime()
-                );
-            }
-        };
+        return (rs, rowNum) -> new User(
+                rs.getLong("id"),
+                rs.getString("name"),
+                rs.getString("email"),
+                rs.getTimestamp("regDate").toLocalDateTime(),
+                rs.getTimestamp("modDate").toLocalDateTime()
+        );
+    }
+
+    private RowMapper<UserResponseDto> userResponseRowMapper() {
+        return (rs, rowNum) -> new UserResponseDto(
+                rs.getLong("id"),
+                rs.getString("name"),
+                rs.getString("email"),
+                rs.getTimestamp("regDate").toLocalDateTime(),
+                rs.getTimestamp("modDate").toLocalDateTime()
+        );
     }
 }
