@@ -12,7 +12,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.sql.DataSource;
 import java.time.LocalDateTime;
@@ -82,23 +81,22 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     @Override
     public Schedule findScheduleById(Long id) {
         List<Schedule> result = jdbcTemplate.query(
-                "SELECT s.id, u.name author, s.todo, s.reg_date, s.mod_date " +
+                "SELECT s.id, u.name author, s.todo, s.password, s.is_deleted, s.reg_date, s.mod_date " +
                         "FROM schedule s " +
                         "JOIN user u ON s.author_id = u.id " +
-                        "WHERE s.is_deleted = 0 " +
-                        "AND s.id = ?", scheduleRowMapper2(), id);
+                        "WHERE s.id = ?", scheduleRowMapper2(), id);
         return result.stream().findAny().orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.SCHEDULE_NOT_FOUND, String.valueOf(id)));
     }
 
     @Override
     public int updateSchedule(Long id, Schedule schedule) {
-        String sql = "UPDATE schedule SET author_id = ?, todo = ? WHERE is_deleted = 0 AND id = ? AND password = ?";
-        return jdbcTemplate.update(sql, schedule.getAuthorId(), schedule.getTodo(), id, schedule.getPassword());
+        String sql = "UPDATE schedule SET author_id = ?, todo = ? WHERE is_deleted = 0 AND id = ?";
+        return jdbcTemplate.update(sql, schedule.getAuthorId(), schedule.getTodo(), id);
     }
 
     @Override
-    public int deleteSchedule(Long id, String password) {
-        return jdbcTemplate.update("UPDATE schedule SET is_deleted = 1 WHERE id = ? AND password = ?", id, password);
+    public int deleteSchedule(Long id) {
+        return jdbcTemplate.update("UPDATE schedule SET is_deleted = 1 WHERE id = ?", id);
     }
 
 
@@ -107,6 +105,8 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
                 rs.getLong("id"),
                 rs.getString("author"),
                 rs.getString("todo"),
+                rs.getString("password"),
+                rs.getBoolean("is_deleted"),
                 rs.getTimestamp("reg_date").toLocalDateTime(),
                 rs.getTimestamp("mod_date").toLocalDateTime()
         );

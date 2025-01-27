@@ -11,6 +11,7 @@ public enum ErrorCode {
     USER_NOT_FOUND("ER-002", "존재하지 않는 유저 ID 입니다."),
     SCHEDULE_NOT_FOUND("ER-003", "존재하지 않는 일정 ID 입니다."),
     PASSWORD_INCORRECT("ER-004", "비밀번호가 일치하지 않습니다."),
+    ENTITY_DELETED("ER-005", "이미 삭제된 정보입니다."),
     UNKNOWN("ER-999", "알 수 없는 오류가 발생했습니다.");
 
     private final String code;

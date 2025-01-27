@@ -15,5 +15,5 @@ public interface ScheduleRepository {
 
     int updateSchedule(Long id, Schedule schedule);
 
-    int deleteSchedule(Long id, String password);
+    int deleteSchedule(Long id);
 }
