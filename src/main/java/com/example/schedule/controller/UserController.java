@@ -29,12 +29,6 @@ public class UserController {
         return new ResponseEntity<>(userService.findUserById(id), HttpStatus.OK);
     }
 
-    /*
-    @GetMapping
-    public ResponseEntity<UserResponseDto> findUserByName(@RequestParam String name) {
-        return new ResponseEntity<>(userService.findUserByName(name), HttpStatus.OK);
-    }
-    */
     @GetMapping
     public ResponseEntity<List<UserResponseDto>> findAllUser() {
         return new ResponseEntity<>(userService.findAllUser(), HttpStatus.OK);

@@ -25,8 +25,10 @@ public class ScheduleController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ScheduleResponseDto>> findAllSchedules(@RequestBody ScheduleRequestDto dto) {
-        return new ResponseEntity<>(scheduleService.findAllSchedules(dto), HttpStatus.OK);
+    public ResponseEntity<List<ScheduleResponseDto>> findAllSchedules(@RequestParam(required = false) Integer pageNo,
+                                                                      @RequestParam(required = false) Integer size,
+                                                                      @RequestBody ScheduleRequestDto dto) {
+        return new ResponseEntity<>(scheduleService.findAllSchedules(dto, pageNo, size), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -44,4 +46,5 @@ public class ScheduleController {
         scheduleService.deleteSchedule(id, dto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
 }

@@ -34,12 +34,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDto findUserByName(String name) {
-        User user = userRepository.findUserByName(name);
-        return new UserResponseDto(user);
-    }
-
-    @Override
     public List<UserResponseDto> findAllUser() {
         return userRepository.findAllUser();
     }
