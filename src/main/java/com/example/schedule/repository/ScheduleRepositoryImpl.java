@@ -2,6 +2,8 @@ package com.example.schedule.repository;
 
 import com.example.schedule.dto.ScheduleResponseDto;
 import com.example.schedule.entity.Schedule;
+import com.example.schedule.util.EmptyTool;
+import com.example.schedule.util.Paging;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -46,23 +48,30 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     }
 
     @Override
-    public List<ScheduleResponseDto> findAllSchedules(Schedule dto) {
+    public List<ScheduleResponseDto> findAllSchedules(Schedule dto, Paging paging) {
         String sql = "SELECT s.id, u.name author, s.todo, s.regDate, s.modDate " +
                 "FROM schedule s " +
                 "JOIN user u ON s.author_id = u.id " +
                 "WHERE 1=1";
         List<Object> params = new ArrayList<>();
 
-        if (dto.getAuthorId() != null) {
+        if (EmptyTool.notEmpty(dto.getAuthorId())) {
             sql += " AND s.author_id = ?";
             params.add(dto.getAuthorId());
         }
-        if (dto.getModDate() != null) {
+        if (EmptyTool.notEmpty(dto.getModDate())) {
             sql += " AND s.modDate < ?";
             params.add(dto.getModDate().plusDays(1));
         }
 
         sql += " ORDER BY s.modDate DESC";
+
+        if (EmptyTool.notEmpty(paging)) {
+            sql += " LIMIT ?, ?";
+            params.add(paging.getStart());
+            params.add(paging.getEnd());
+        }
+
         log.info("sql = {}", sql);
         return jdbcTemplate.query(sql, scheduleRowMapper(), params.toArray());
     }

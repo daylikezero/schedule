@@ -10,7 +10,5 @@ public interface UserService {
 
     UserResponseDto findUserById(Long id);
 
-    UserResponseDto findUserByName(String name);
-
     List<UserResponseDto> findAllUser();
 }

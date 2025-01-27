@@ -6,6 +6,8 @@ import com.example.schedule.entity.Schedule;
 import com.example.schedule.entity.User;
 import com.example.schedule.repository.ScheduleRepository;
 import com.example.schedule.repository.UserRepository;
+import com.example.schedule.util.EmptyTool;
+import com.example.schedule.util.Paging;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,11 +41,10 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public List<ScheduleResponseDto> findAllSchedules(ScheduleRequestDto dto) {
-
+    public List<ScheduleResponseDto> findAllSchedules(ScheduleRequestDto dto, Integer pageNo, Integer size) {
         Schedule schedule = new Schedule();
-
-        if (dto.getAuthorId() != null) {
+        Paging paging = null;
+        if (EmptyTool.notEmpty(dto.getAuthorId())) {
             try {
                 User user = userRepository.findUserById(dto.getAuthorId());
                 schedule.setAuthorId(user.getId());
@@ -52,12 +53,18 @@ public class ScheduleServiceImpl implements ScheduleService {
             }
         }
 
-        if (dto.getModDate() != null) {
+        if (EmptyTool.notEmpty(dto.getModDate())) {
             LocalDateTime localDateTime = LocalDateTime.ofInstant(dto.getModDate().toInstant(), ZoneId.systemDefault());
             schedule.setModDate(localDateTime);
         }
 
-        return scheduleRepository.findAllSchedules(schedule);
+        if (EmptyTool.notEmpty(pageNo) || EmptyTool.notEmpty(size)) {
+            int pageNumber = pageNo == null ? 1 : pageNo;
+            int pageSize = size == null ? 10 : size;
+            paging = new Paging(pageNumber, pageSize);
+        }
+
+        return scheduleRepository.findAllSchedules(schedule, paging);
     }
 
     @Override
@@ -70,7 +77,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public ScheduleResponseDto updateSchedule(Long id, ScheduleRequestDto dto) {
 
-        if (dto.getAuthorId() == null || !StringUtils.hasText(dto.getPassword())) {
+        if (EmptyTool.empty(dto.getAuthorId()) || !StringUtils.hasText(dto.getPassword())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "authorId or password is missing");
         }
         User user = userRepository.findUserById(dto.getAuthorId());

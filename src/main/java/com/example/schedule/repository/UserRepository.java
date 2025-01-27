@@ -10,7 +10,5 @@ public interface UserRepository {
 
     User findUserById(Long id);
 
-    User findUserByName(String name);
-
     List<UserResponseDto> findAllUser();
 }
