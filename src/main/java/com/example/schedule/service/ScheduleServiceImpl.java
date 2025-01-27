@@ -82,7 +82,7 @@ public class ScheduleServiceImpl implements ScheduleService {
         }
         User user = userRepository.findUserById(dto.getAuthorId());
         // TODO 패스워드 암호화
-        Schedule schedule = new Schedule(id, user.getId(), dto.getTodo(), dto.getPassword(), LocalDateTime.now());
+        Schedule schedule = new Schedule(id, user.getId(), dto.getTodo(), dto.getPassword());
         int updatedRow = scheduleRepository.updateSchedule(id, schedule);
         // TODO 수정 실패: 패스워드 불일치 조건 분기
         if (updatedRow == 0) {

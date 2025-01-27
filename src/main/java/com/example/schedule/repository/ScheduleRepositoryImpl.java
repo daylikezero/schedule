@@ -40,8 +40,9 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
         params.put("password", schedule.getPassword());
 
         LocalDateTime now = LocalDateTime.now();
-        params.put("regDate", now);
-        params.put("modDate", now);
+        params.put("reg_date", now);
+        params.put("mod_date", now);
+        params.put("is_deleted", 0);
 
         Number id = insert.executeAndReturnKey(params);
         return new ScheduleResponseDto(id.longValue(), author, schedule.getTodo(), now, now);
@@ -49,10 +50,10 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
 
     @Override
     public List<ScheduleResponseDto> findAllSchedules(Schedule dto, Paging paging) {
-        String sql = "SELECT s.id, u.name author, s.todo, s.regDate, s.modDate " +
+        String sql = "SELECT s.id, u.name author, s.todo, s.reg_date, s.mod_date " +
                 "FROM schedule s " +
                 "JOIN user u ON s.author_id = u.id " +
-                "WHERE 1=1";
+                "WHERE s.is_deleted = 0 ";
         List<Object> params = new ArrayList<>();
 
         if (EmptyTool.notEmpty(dto.getAuthorId())) {
@@ -60,11 +61,11 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
             params.add(dto.getAuthorId());
         }
         if (EmptyTool.notEmpty(dto.getModDate())) {
-            sql += " AND s.modDate < ?";
+            sql += " AND s.mod_date < ?";
             params.add(dto.getModDate().plusDays(1));
         }
 
-        sql += " ORDER BY s.modDate DESC";
+        sql += " ORDER BY s.mod_date DESC";
 
         if (EmptyTool.notEmpty(paging)) {
             sql += " LIMIT ?, ?";
@@ -79,22 +80,23 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     @Override
     public Schedule findScheduleById(Long id) {
         List<Schedule> result = jdbcTemplate.query(
-                "SELECT s.id, u.name author, s.todo, s.regDate, s.modDate " +
+                "SELECT s.id, u.name author, s.todo, s.reg_date, s.mod_date " +
                         "FROM schedule s " +
                         "JOIN user u ON s.author_id = u.id " +
-                        "WHERE s.id = ?", scheduleRowMapper2(), id);
+                        "WHERE s.is_deleted = 0 " +
+                        "AND s.id = ?", scheduleRowMapper2(), id);
         return result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id));
     }
 
     @Override
     public int updateSchedule(Long id, Schedule schedule) {
-        String sql = "UPDATE schedule SET author_id = ?, todo = ?, modDate = ? WHERE id = ? AND password = ?";
-        return jdbcTemplate.update(sql, schedule.getAuthorId(), schedule.getTodo(), schedule.getModDate(), id, schedule.getPassword());
+        String sql = "UPDATE schedule SET author_id = ?, todo = ? WHERE is_deleted = 0 AND id = ? AND password = ?";
+        return jdbcTemplate.update(sql, schedule.getAuthorId(), schedule.getTodo(), id, schedule.getPassword());
     }
 
     @Override
     public int deleteSchedule(Long id, String password) {
-        return jdbcTemplate.update("DELETE FROM schedule WHERE id = ? AND password = ?", id, password);
+        return jdbcTemplate.update("UPDATE schedule SET is_deleted = 1 WHERE id = ? AND password = ?", id, password);
     }
 
 
@@ -103,8 +105,8 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
                 rs.getLong("id"),
                 rs.getString("author"),
                 rs.getString("todo"),
-                rs.getTimestamp("regDate").toLocalDateTime(),
-                rs.getTimestamp("modDate").toLocalDateTime()
+                rs.getTimestamp("reg_date").toLocalDateTime(),
+                rs.getTimestamp("mod_date").toLocalDateTime()
         );
     }
 
@@ -113,8 +115,8 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
                 rs.getLong("id"),
                 rs.getString("author"),
                 rs.getString("todo"),
-                rs.getTimestamp("regDate").toLocalDateTime(),
-                rs.getTimestamp("modDate").toLocalDateTime()
+                rs.getTimestamp("reg_date").toLocalDateTime(),
+                rs.getTimestamp("mod_date").toLocalDateTime()
         );
     }
 }
