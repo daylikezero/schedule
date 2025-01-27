@@ -33,11 +33,13 @@
 
 
 ## 📋 [API 명세서](https://documenter.getpostman.com/view/41322145/2sAYQdkAV4#intro)
-![image](https://github.com/user-attachments/assets/b04d5fe9-d142-4c30-9c39-871336ca430e)
-![스크린샷 2025-01-25 오후 4 18 15](https://github.com/user-attachments/assets/18bbc2a1-9ac8-4fc6-ac72-a3f4413271a6)
+![스크린샷 2025-01-27 오후 5 50 08](https://github.com/user-attachments/assets/0743421b-f8ef-4879-9c83-09a7a01f7c4b)
+![스크린샷 2025-01-27 오후 5 50 32](https://github.com/user-attachments/assets/f7266200-3fb8-4ea9-b065-825642cf2ada)
+
 
 ## [✔️ ERD](https://www.erdcloud.com/d/WPowjhdKphtLtdM66)
-![image](https://github.com/user-attachments/assets/f72c3354-3b74-4a48-9033-80a059e50027)
+![image](https://github.com/user-attachments/assets/7ca895e0-adfe-44ee-b2f8-7f64cfd3a7d8)
+
 
 ## ⚙ 개발 환경
 - <img src="https://img.shields.io/badge/Java-007396?&style=for-the-badge&logo=java&logoColor=white" /><img src="https://img.shields.io/badge/gradle-%2302303A.svg?&style=for-the-badge&logo=gradle&logoColor=white" /><img src="https://img.shields.io/badge/spring-%236DB33F.svg?&style=for-the-badge&logo=spring&logoColor=white" /><img src="https://img.shields.io/badge/mysql-%234479A1.svg?&style=for-the-badge&logo=mysql&logoColor=white" />
