@@ -2,6 +2,8 @@ package com.example.schedule.controller;
 
 import com.example.schedule.dto.ScheduleRequestDto;
 import com.example.schedule.dto.ScheduleResponseDto;
+import com.example.schedule.exception.CustomException;
+import com.example.schedule.exception.ErrorDto;
 import com.example.schedule.service.ScheduleService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,4 +49,8 @@ public class ScheduleController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @ExceptionHandler(CustomException.class)
+    public ResponseEntity<ErrorDto> handleException(CustomException e) {
+        return ErrorDto.errResponseEntity(e);
+    }
 }
