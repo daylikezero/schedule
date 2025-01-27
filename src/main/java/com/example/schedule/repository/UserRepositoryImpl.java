@@ -36,8 +36,9 @@ public class UserRepositoryImpl implements UserRepository {
             params.put("email", user.getEmail());
         }
         LocalDateTime now = LocalDateTime.now();
-        params.put("regDate", now);
-        params.put("modDate", now);
+        params.put("reg_date", now);
+        params.put("mod_date", now);
+        params.put("is_deleted", 0);
 
         Number id = insert.executeAndReturnKey(params);
         return new UserResponseDto(id.longValue(), user.getName(), user.getEmail(), now, now);
@@ -45,13 +46,13 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User findUserById(Long id) {
-        List<User> result = jdbcTemplate.query("SELECT * FROM user WHERE id = ?", userRowMapper(), id);
+        List<User> result = jdbcTemplate.query("SELECT * FROM user WHERE id = ? AND is_deleted = 0", userRowMapper(), id);
         return result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found with id: " + id));
     }
 
     @Override
     public List<UserResponseDto> findAllUser() {
-        return jdbcTemplate.query("select * from user", userResponseRowMapper());
+        return jdbcTemplate.query("select * from user where is_deleted = 0", userResponseRowMapper());
     }
 
     private RowMapper<User> userRowMapper() {
@@ -59,8 +60,8 @@ public class UserRepositoryImpl implements UserRepository {
                 rs.getLong("id"),
                 rs.getString("name"),
                 rs.getString("email"),
-                rs.getTimestamp("regDate").toLocalDateTime(),
-                rs.getTimestamp("modDate").toLocalDateTime()
+                rs.getTimestamp("reg_date").toLocalDateTime(),
+                rs.getTimestamp("mod_date").toLocalDateTime()
         );
     }
 
@@ -69,8 +70,8 @@ public class UserRepositoryImpl implements UserRepository {
                 rs.getLong("id"),
                 rs.getString("name"),
                 rs.getString("email"),
-                rs.getTimestamp("regDate").toLocalDateTime(),
-                rs.getTimestamp("modDate").toLocalDateTime()
+                rs.getTimestamp("reg_date").toLocalDateTime(),
+                rs.getTimestamp("mod_date").toLocalDateTime()
         );
     }
 }

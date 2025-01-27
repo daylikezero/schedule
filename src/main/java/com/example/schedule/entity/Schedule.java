@@ -26,12 +26,9 @@ public class Schedule {
         this.password = password;
     }
 
-    public Schedule(Long id, Long authorId, String todo, String password, LocalDateTime modDate) {
+    public Schedule(Long id, Long authorId, String todo, String password) {
+        this(authorId, todo, password);
         this.id = id;
-        this.authorId = authorId;
-        this.todo = todo;
-        this.password = password;
-        this.modDate = modDate;
     }
 
     public Schedule(Long id, String author, String todo, LocalDateTime regDate, LocalDateTime modDate) {
