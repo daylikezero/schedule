@@ -5,7 +5,6 @@ import com.example.schedule.dto.ScheduleResponseDto;
 import com.example.schedule.exception.CustomException;
 import com.example.schedule.exception.ErrorDto;
 import com.example.schedule.service.ScheduleService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,7 +13,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/schedules")
-@Slf4j
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
@@ -51,8 +49,8 @@ public class ScheduleController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @ExceptionHandler(CustomException.class)
-    public ResponseEntity<ErrorDto> handleException(CustomException e) {
-        return ErrorDto.errResponseEntity(e);
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorDto> handleException(Exception e) {
+        return ErrorDto.errResponseEntity(new CustomException(e));
     }
 }

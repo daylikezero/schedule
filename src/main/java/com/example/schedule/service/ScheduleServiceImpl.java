@@ -114,6 +114,9 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     private Schedule validSchedule(Long id, ScheduleRequestDto dto) {
         Schedule schedule = scheduleRepository.findScheduleById(id);
+        if (schedule.getIsDeleted()) {
+            throw new CustomException(ErrorCode.ENTITY_DELETED, String.valueOf(id));
+        }
         if (!dto.getPassword().equals(schedule.getPassword())) {
             throw new CustomException(ErrorCode.PASSWORD_INCORRECT);
         }

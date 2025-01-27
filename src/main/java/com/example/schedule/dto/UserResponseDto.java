@@ -8,11 +8,11 @@ import java.time.LocalDateTime;
 
 @Getter
 public class UserResponseDto {
-    private Long id;
-    private String name;
-    private String email;
-    private String regDate;
-    private String modDate;
+    private final Long id;
+    private final String name;
+    private final String email;
+    private final String regDate;
+    private final String modDate;
 
     public UserResponseDto(User user) {
         this.id = user.getId();
