@@ -2,6 +2,8 @@ package com.example.schedule.repository;
 
 import com.example.schedule.dto.ScheduleResponseDto;
 import com.example.schedule.entity.Schedule;
+import com.example.schedule.exception.CustomException;
+import com.example.schedule.exception.ErrorCode;
 import com.example.schedule.util.EmptyTool;
 import com.example.schedule.util.Paging;
 import lombok.extern.slf4j.Slf4j;
@@ -85,7 +87,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
                         "JOIN user u ON s.author_id = u.id " +
                         "WHERE s.is_deleted = 0 " +
                         "AND s.id = ?", scheduleRowMapper2(), id);
-        return result.stream().findAny().orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Does not exist id = " + id));
+        return result.stream().findAny().orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.SCHEDULE_NOT_FOUND, String.valueOf(id)));
     }
 
     @Override

@@ -4,6 +4,8 @@ import com.example.schedule.dto.ScheduleRequestDto;
 import com.example.schedule.dto.ScheduleResponseDto;
 import com.example.schedule.entity.Schedule;
 import com.example.schedule.entity.User;
+import com.example.schedule.exception.CustomException;
+import com.example.schedule.exception.ErrorCode;
 import com.example.schedule.repository.ScheduleRepository;
 import com.example.schedule.repository.UserRepository;
 import com.example.schedule.util.EmptyTool;
@@ -16,7 +18,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -45,12 +46,8 @@ public class ScheduleServiceImpl implements ScheduleService {
         Schedule schedule = new Schedule();
         Paging paging = null;
         if (EmptyTool.notEmpty(dto.getAuthorId())) {
-            try {
-                User user = userRepository.findUserById(dto.getAuthorId());
-                schedule.setAuthorId(user.getId());
-            } catch (ResponseStatusException e) {
-                return Collections.emptyList();
-            }
+            User user = userRepository.findUserById(dto.getAuthorId());
+            schedule.setAuthorId(user.getId());
         }
 
         if (EmptyTool.notEmpty(dto.getModDate())) {
@@ -78,7 +75,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     public ScheduleResponseDto updateSchedule(Long id, ScheduleRequestDto dto) {
 
         if (EmptyTool.empty(dto.getAuthorId()) || !StringUtils.hasText(dto.getPassword())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "authorId or password is missing");
+            throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.INVALID_PARAMETER);
         }
         User user = userRepository.findUserById(dto.getAuthorId());
         // TODO 패스워드 암호화
