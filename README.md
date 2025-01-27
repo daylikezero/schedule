@@ -33,7 +33,7 @@
 
 
 ## 📋 [API 명세서](https://documenter.getpostman.com/view/41322145/2sAYQdkAV4#intro)
-![스크린샷 2025-01-25 오후 4 17 28](https://github.com/user-attachments/assets/567a7c5f-162a-4dff-85c1-56327b228e07)
+![image](https://github.com/user-attachments/assets/b04d5fe9-d142-4c30-9c39-871336ca430e)
 ![스크린샷 2025-01-25 오후 4 18 15](https://github.com/user-attachments/assets/18bbc2a1-9ac8-4fc6-ac72-a3f4413271a6)
 
 ## [✔️ ERD](https://www.erdcloud.com/d/WPowjhdKphtLtdM66)
