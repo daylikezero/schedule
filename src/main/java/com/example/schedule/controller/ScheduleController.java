@@ -2,8 +2,6 @@ package com.example.schedule.controller;
 
 import com.example.schedule.dto.ScheduleRequestDto;
 import com.example.schedule.dto.ScheduleResponseDto;
-import com.example.schedule.exception.CustomException;
-import com.example.schedule.exception.ErrorDto;
 import com.example.schedule.service.ScheduleService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,10 +45,5 @@ public class ScheduleController {
     public ResponseEntity<Void> deleteSchedule(@PathVariable Long id, @RequestBody ScheduleRequestDto dto) {
         scheduleService.deleteSchedule(id, dto);
         return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<ErrorDto> handleException(Exception e) {
-        return ErrorDto.errResponseEntity(new CustomException(e));
     }
 }
