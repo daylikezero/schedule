@@ -9,14 +9,14 @@ public class CustomException extends RuntimeException {
     private final ErrorCode errorCode;
     private final String detail;
 
-    public CustomException(HttpStatus status, ErrorCode errorCode) {
-        this.status = status;
+    public CustomException(ErrorCode errorCode) {
+        this.status = errorCode.getStatus();
         this.errorCode = errorCode;
         this.detail = "";
     }
 
-    public CustomException(HttpStatus status, ErrorCode errorCode, String message) {
-        this.status = status;
+    public CustomException(ErrorCode errorCode, String message) {
+        this.status = errorCode.getStatus();
         this.errorCode = errorCode;
         this.detail = message;
     }
@@ -30,7 +30,7 @@ public class CustomException extends RuntimeException {
         } else {
             this.status = HttpStatus.INTERNAL_SERVER_ERROR;
             this.errorCode = ErrorCode.UNKNOWN;
-            this.detail = "알 수 없는 오류 발생, 서버팀에 문의 바랍니다.";
+            this.detail = "알 수 없는 오류 발생, 개발팀에 문의 바랍니다.";
         }
     }
 }

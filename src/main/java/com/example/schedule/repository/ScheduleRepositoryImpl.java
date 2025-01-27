@@ -7,7 +7,6 @@ import com.example.schedule.exception.ErrorCode;
 import com.example.schedule.util.EmptyTool;
 import com.example.schedule.util.Paging;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -85,7 +84,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
                         "FROM schedule s " +
                         "JOIN user u ON s.author_id = u.id " +
                         "WHERE s.id = ?", scheduleRowMapper2(), id);
-        return result.stream().findAny().orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.SCHEDULE_NOT_FOUND, String.valueOf(id)));
+        return result.stream().findAny().orElseThrow(() -> new CustomException(ErrorCode.SCHEDULE_NOT_FOUND, String.valueOf(id)));
     }
 
     @Override
