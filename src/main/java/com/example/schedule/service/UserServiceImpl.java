@@ -21,7 +21,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseDto saveUser(UserRequestDto dto) {
         User user = new User(dto.getName());
-        if(StringUtils.hasText(dto.getEmail())) {
+        if (StringUtils.hasText(dto.getEmail())) {
             user.setEmail(dto.getEmail());
         }
         return userRepository.saveUser(user);

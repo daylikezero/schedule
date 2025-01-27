@@ -9,14 +9,14 @@ import com.example.schedule.exception.ErrorCode;
 import com.example.schedule.repository.ScheduleRepository;
 import com.example.schedule.repository.UserRepository;
 import com.example.schedule.util.EmptyTool;
+import com.example.schedule.util.LocalDateTimeUtils;
 import com.example.schedule.util.Paging;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -44,12 +44,18 @@ public class ScheduleServiceImpl implements ScheduleService {
         Schedule schedule = new Schedule();
         Paging paging = null;
         if (EmptyTool.notEmpty(dto.getAuthorId())) {
-            User user = userRepository.findUserById(dto.getAuthorId());
-            schedule.setAuthorId(user.getId());
+            try {
+                User user = userRepository.findUserById(dto.getAuthorId());
+                schedule.setAuthorId(user.getId());
+            } catch (CustomException e) {
+                if (e.getErrorCode() == ErrorCode.USER_NOT_FOUND) {
+                    return Collections.emptyList();
+                }
+            }
         }
 
         if (EmptyTool.notEmpty(dto.getModDate())) {
-            LocalDateTime localDateTime = LocalDateTime.ofInstant(dto.getModDate().toInstant(), ZoneId.systemDefault());
+            LocalDateTime localDateTime = LocalDateTimeUtils.dateToLocalDateTime(dto.getModDate());
             schedule.setModDate(localDateTime);
         }
 
@@ -65,6 +71,9 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public ScheduleResponseDto findScheduleById(Long id) {
         Schedule schedule = scheduleRepository.findScheduleById(id);
+        if (schedule.getIsDeleted()) {
+            throw new CustomException(ErrorCode.ENTITY_DELETED, String.valueOf(id));
+        }
         return new ScheduleResponseDto(schedule);
     }
 
@@ -72,7 +81,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public ScheduleResponseDto updateSchedule(Long id, ScheduleRequestDto dto) {
         if (EmptyTool.empty(dto.getAuthorId()) || !StringUtils.hasText(dto.getPassword())) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.INVALID_PARAMETER);
+            throw new CustomException(ErrorCode.INVALID_PARAMETER);
         }
         User user = userRepository.findUserById(dto.getAuthorId());
 
@@ -82,7 +91,7 @@ public class ScheduleServiceImpl implements ScheduleService {
 
         int updatedRow = scheduleRepository.updateSchedule(id, schedule);
         if (updatedRow == 0) {
-            throw new CustomException(HttpStatus.NOT_FOUND, ErrorCode.SCHEDULE_NOT_FOUND);
+            throw new CustomException(ErrorCode.SCHEDULE_NOT_FOUND);
         }
 
         return new ScheduleResponseDto(schedule);
@@ -92,24 +101,21 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public void deleteSchedule(Long id, ScheduleRequestDto dto) {
         if (!StringUtils.hasText(dto.getPassword())) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.INVALID_PARAMETER);
+            throw new CustomException(ErrorCode.INVALID_PARAMETER);
         }
 
         validSchedule(id, dto);
 
         int deleteRow = scheduleRepository.deleteSchedule(id);
         if (deleteRow == 0) {
-            throw new CustomException(HttpStatus.NOT_FOUND, ErrorCode.SCHEDULE_NOT_FOUND);
+            throw new CustomException(ErrorCode.SCHEDULE_NOT_FOUND);
         }
     }
 
     private Schedule validSchedule(Long id, ScheduleRequestDto dto) {
         Schedule schedule = scheduleRepository.findScheduleById(id);
-        if (schedule.getIsDeleted()) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.ENTITY_DELETED, String.valueOf(id));
-        }
         if (!dto.getPassword().equals(schedule.getPassword())) {
-            throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.PASSWORD_INCORRECT);
+            throw new CustomException(ErrorCode.PASSWORD_INCORRECT);
         }
         return schedule;
     }

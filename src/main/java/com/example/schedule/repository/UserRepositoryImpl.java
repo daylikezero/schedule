@@ -4,13 +4,11 @@ import com.example.schedule.dto.UserResponseDto;
 import com.example.schedule.entity.User;
 import com.example.schedule.exception.CustomException;
 import com.example.schedule.exception.ErrorCode;
-import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
-import org.springframework.web.server.ResponseStatusException;
 
 import javax.sql.DataSource;
 import java.time.LocalDateTime;
@@ -49,7 +47,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User findUserById(Long id) {
         List<User> result = jdbcTemplate.query("SELECT * FROM user WHERE id = ? AND is_deleted = 0", userRowMapper(), id);
-        return result.stream().findAny().orElseThrow(() -> new CustomException(HttpStatus.NOT_FOUND, ErrorCode.USER_NOT_FOUND, String.valueOf(id)));
+        return result.stream().findAny().orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND, String.valueOf(id)));
     }
 
     @Override

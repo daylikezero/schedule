@@ -5,6 +5,7 @@ import com.example.schedule.dto.ScheduleResponseDto;
 import com.example.schedule.exception.CustomException;
 import com.example.schedule.exception.ErrorDto;
 import com.example.schedule.service.ScheduleService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/schedules")
+@Slf4j
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
