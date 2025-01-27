@@ -14,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -35,7 +34,6 @@ public class ScheduleServiceImpl implements ScheduleService {
     public ScheduleResponseDto saveSchedule(ScheduleRequestDto dto) {
         User user = userRepository.findUserById(dto.getAuthorId());
 
-        // TODO 패스워드 암호화
         Schedule schedule = new Schedule(user.getId(), dto.getTodo(), dto.getPassword());
 
         return scheduleRepository.saveSchedule(schedule, user.getName());
@@ -73,31 +71,46 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Transactional
     @Override
     public ScheduleResponseDto updateSchedule(Long id, ScheduleRequestDto dto) {
-
         if (EmptyTool.empty(dto.getAuthorId()) || !StringUtils.hasText(dto.getPassword())) {
             throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.INVALID_PARAMETER);
         }
         User user = userRepository.findUserById(dto.getAuthorId());
-        // TODO 패스워드 암호화
-        Schedule schedule = new Schedule(id, user.getId(), dto.getTodo(), dto.getPassword());
-        int updatedRow = scheduleRepository.updateSchedule(id, schedule);
-        // TODO 수정 실패: 패스워드 불일치 조건 분기
-        if (updatedRow == 0) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Schedule not found");
-        }
 
-        schedule = scheduleRepository.findScheduleById(id);
+        Schedule schedule = validSchedule(id, dto);
+        schedule.setAuthorId(user.getId());
+        schedule.setTodo(dto.getTodo());
+
+        int updatedRow = scheduleRepository.updateSchedule(id, schedule);
+        if (updatedRow == 0) {
+            throw new CustomException(HttpStatus.NOT_FOUND, ErrorCode.SCHEDULE_NOT_FOUND);
+        }
 
         return new ScheduleResponseDto(schedule);
     }
 
+    @Transactional
     @Override
     public void deleteSchedule(Long id, ScheduleRequestDto dto) {
-        // TODO 패스워드 암호화
-        int deleteRow = scheduleRepository.deleteSchedule(id, dto.getPassword());
-        // TODO 삭제 실패: 패스워드 불일치 조건 분기
-        if (deleteRow == 0) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Schedule not found");
+        if (!StringUtils.hasText(dto.getPassword())) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.INVALID_PARAMETER);
         }
+
+        validSchedule(id, dto);
+
+        int deleteRow = scheduleRepository.deleteSchedule(id);
+        if (deleteRow == 0) {
+            throw new CustomException(HttpStatus.NOT_FOUND, ErrorCode.SCHEDULE_NOT_FOUND);
+        }
+    }
+
+    private Schedule validSchedule(Long id, ScheduleRequestDto dto) {
+        Schedule schedule = scheduleRepository.findScheduleById(id);
+        if (schedule.getIsDeleted()) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.ENTITY_DELETED, String.valueOf(id));
+        }
+        if (!dto.getPassword().equals(schedule.getPassword())) {
+            throw new CustomException(HttpStatus.BAD_REQUEST, ErrorCode.PASSWORD_INCORRECT);
+        }
+        return schedule;
     }
 }
