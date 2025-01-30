@@ -3,6 +3,7 @@ package com.example.schedule.controller;
 import com.example.schedule.dto.UserRequestDto;
 import com.example.schedule.dto.UserResponseDto;
 import com.example.schedule.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<UserResponseDto> saveUser(@RequestBody UserRequestDto dto) {
+    public ResponseEntity<UserResponseDto> saveUser(@RequestBody @Valid UserRequestDto dto) {
         return new ResponseEntity<>(userService.saveUser(dto), HttpStatus.OK);
     }
 
@@ -35,7 +36,7 @@ public class UserController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<UserResponseDto> updateUser(@PathVariable Long id, @RequestBody UserRequestDto dto) {
+    public ResponseEntity<UserResponseDto> updateUser(@PathVariable Long id, @RequestBody @Valid UserRequestDto dto) {
         return new ResponseEntity<>(userService.updateUser(id, dto), HttpStatus.OK);
     }
 
