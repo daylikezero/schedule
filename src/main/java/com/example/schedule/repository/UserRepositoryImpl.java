@@ -55,11 +55,23 @@ public class UserRepositoryImpl implements UserRepository {
         return jdbcTemplate.query("select * from user where is_deleted = 0", userResponseRowMapper());
     }
 
+    @Override
+    public int updateUser(Long id, User user) {
+        String sql = "UPDATE user SET name = ?, email = ? WHERE is_deleted = 0 AND id = ?";
+        return jdbcTemplate.update(sql, user.getName(), user.getEmail(), id);
+    }
+
+    @Override
+    public int deleteUser(Long id) {
+        return jdbcTemplate.update("UPDATE user SET is_deleted = 1 WHERE id = ?", id);
+    }
+
     private RowMapper<User> userRowMapper() {
         return (rs, rowNum) -> new User(
                 rs.getLong("id"),
                 rs.getString("name"),
                 rs.getString("email"),
+                rs.getBoolean("is_deleted"),
                 rs.getTimestamp("reg_date").toLocalDateTime(),
                 rs.getTimestamp("mod_date").toLocalDateTime()
         );
