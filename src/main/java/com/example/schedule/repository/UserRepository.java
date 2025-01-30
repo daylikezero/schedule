@@ -11,4 +11,8 @@ public interface UserRepository {
     User findUserById(Long id);
 
     List<UserResponseDto> findAllUser();
+
+    int updateUser(Long id, User user);
+
+    int deleteUser(Long id);
 }

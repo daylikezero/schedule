@@ -33,4 +33,15 @@ public class UserController {
     public ResponseEntity<List<UserResponseDto>> findAllUser() {
         return new ResponseEntity<>(userService.findAllUser(), HttpStatus.OK);
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<UserResponseDto> updateUser(@PathVariable Long id, @RequestBody UserRequestDto dto) {
+        return new ResponseEntity<>(userService.updateUser(id, dto), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        userService.deleteUser(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

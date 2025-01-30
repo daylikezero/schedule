@@ -3,6 +3,8 @@ package com.example.schedule.service;
 import com.example.schedule.dto.UserRequestDto;
 import com.example.schedule.dto.UserResponseDto;
 import com.example.schedule.entity.User;
+import com.example.schedule.exception.CustomException;
+import com.example.schedule.exception.ErrorCode;
 import com.example.schedule.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -36,5 +38,39 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserResponseDto> findAllUser() {
         return userRepository.findAllUser();
+    }
+
+    @Override
+    public UserResponseDto updateUser(Long id, UserRequestDto dto) {
+        User user = validUser(id);
+        user.setName(dto.getName());
+        user.setEmail(dto.getEmail());
+
+        int updatedRow = userRepository.updateUser(id, user);
+
+        if (updatedRow == 0) {
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        }
+
+        return new UserResponseDto(user);
+    }
+
+    @Override
+    public void deleteUser(Long id) {
+        validUser(id);
+
+        int deleteRow = userRepository.deleteUser(id);
+
+        if (deleteRow == 0) {
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        }
+    }
+
+    private User validUser(Long id) {
+        User user = userRepository.findUserById(id);
+        if (user.getIsDeleted()) {
+            throw new CustomException(ErrorCode.ENTITY_DELETED, String.valueOf(id));
+        }
+        return user;
     }
 }
