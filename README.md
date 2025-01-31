@@ -9,16 +9,16 @@
 💐 `Lv6` null 체크 및 특정 패턴에 대한 검증 수행<br>
 
 ## 🗓️ 개발 기간
-2025.01.23(목) ~ 2025.02.04(화) 예정
+2025.01.23(목) ~ 2025.02.03(월)
 <table>
   <tbody>
     <tr>
       <td align="center">01-23</th>
       <td align="center">01-24</td>
+      <td align="center">01-25</td>
       <td align="center">01-27</td>
       <td align="center">01-31</td>
       <td align="center">02-03</td>
-      <td align="center">02-04</td>
     </tr>
     <tr>
       <td align="center">Lv0<br>Lv1</td>
@@ -33,17 +33,20 @@
 
 
 ## 📋 [API 명세서](https://documenter.getpostman.com/view/41322145/2sAYQdkAV4#intro)
-![스크린샷 2025-01-27 오후 5 50 08](https://github.com/user-attachments/assets/0743421b-f8ef-4879-9c83-09a7a01f7c4b)
-![스크린샷 2025-01-27 오후 5 50 32](https://github.com/user-attachments/assets/f7266200-3fb8-4ea9-b065-825642cf2ada)
-
+![스크린샷 2025-01-31 오후 2 03 33](https://github.com/user-attachments/assets/aa7cb8b7-834e-4b9d-b47e-a48cf924a238)
+![스크린샷 2025-01-31 오후 2 04 05](https://github.com/user-attachments/assets/f2080fde-1950-4680-bea1-254b2513d3c3)
 
 ## [✔️ ERD](https://www.erdcloud.com/d/WPowjhdKphtLtdM66)
 ![image](https://github.com/user-attachments/assets/7ca895e0-adfe-44ee-b2f8-7f64cfd3a7d8)
 
 
 ## ⚙ 개발 환경
-- <img src="https://img.shields.io/badge/Java-007396?&style=for-the-badge&logo=java&logoColor=white" /><img src="https://img.shields.io/badge/gradle-%2302303A.svg?&style=for-the-badge&logo=gradle&logoColor=white" /><img src="https://img.shields.io/badge/spring-%236DB33F.svg?&style=for-the-badge&logo=spring&logoColor=white" /><img src="https://img.shields.io/badge/mysql-%234479A1.svg?&style=for-the-badge&logo=mysql&logoColor=white" />
+- <img src="https://img.shields.io/badge/Java-007396?&style=for-the-badge&logo=java&logoColor=white" /><img src="https://img.shields.io/badge/gradle-%2302303A.svg?&style=for-the-badge&logo=gradle&logoColor=white" /><img src="https://img.shields.io/badge/spring-%236DB33F.svg?&style=for-the-badge&logo=spring&logoColor=white" /><img src="https://img.shields.io/badge/swagger-%2385EA2D.svg?&style=for-the-badge&logo=swagger&logoColor=black" /><img src="https://img.shields.io/badge/mysql-%234479A1.svg?&style=for-the-badge&logo=mysql&logoColor=white" />
 - JDK: `corretto-17 Amazon Corretto 17.0.13 - aarch64`
-<!-- <img src="https://img.shields.io/badge/swagger-%2385EA2D.svg?&style=for-the-badge&logo=swagger&logoColor=black" /> -->
+
 
 ## 🔫 트러블 슈팅
+- [TIL_2025-01-24_일정관리_트러블슈팅](https://velog.io/@daylikezero/TIL-2025-01-24)
+- [TIL_2025-01-25_CURRENT_TIMESTAMP](https://velog.io/@daylikezero/TIL-2025-01-25)
+- [TIL_2025-01-27_@ExceptionHandler](https://velog.io/@daylikezero/TIL-2025-01-27)
+- [TIL_2025-01-31_@Valid](https://velog.io/@daylikezero/TIL-2025-01-31)
