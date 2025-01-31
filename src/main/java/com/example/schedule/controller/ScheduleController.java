@@ -39,7 +39,8 @@ public class ScheduleController {
     @GetMapping
     @Operation(summary = "일정 목록 조회")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "성공")
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터로 일정 목록 조회 시 실패")
     })
     public ResponseEntity<List<ScheduleResponseDto>> findAllSchedules(@RequestParam(required = false) Integer pageNo,
                                                                       @RequestParam(required = false) Integer size,
@@ -61,7 +62,7 @@ public class ScheduleController {
     @Operation(summary = "일정 수정")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공"),
-            @ApiResponse(responseCode = "400", description = "비밀번호 불일치 시 수정 실패"),
+            @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터로 일정 수정 시 실패"),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 일정 ID 수정 시 실패")
     })
     public ResponseEntity<ScheduleResponseDto> updateSchedule(@PathVariable Long id, @RequestBody @Valid ScheduleRequestDto dto) {

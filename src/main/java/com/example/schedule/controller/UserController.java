@@ -29,7 +29,7 @@ public class UserController {
     @Operation(summary = "유저 생성")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공"),
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 유저 ID 일정 생성 시 실패")
+            @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터로 유저 생성 시 실패")
     })
     public ResponseEntity<UserResponseDto> saveUser(@RequestBody @Valid UserRequestDto dto) {
         return new ResponseEntity<>(userService.saveUser(dto), HttpStatus.OK);

@@ -12,10 +12,10 @@ public class ScheduleRequestDto {
 
     private Long authorId;
     private String author;
-    @NotNull
+    @NotNull(message = "할일은 필수값입니다.")
     @Size(max = 200, message = "할일은 최대 200자 이하로 입력해 주세요.")
     private String todo;
-    @NotNull
+    @NotNull(message = "비밀번호는 필수값입니다.")
     private String password;
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date modDate;

@@ -3,6 +3,7 @@ package com.example.schedule.exception;
 import io.swagger.v3.oas.annotations.Hidden;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -17,11 +18,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     private ResponseEntity<ErrorResponseDto> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        return ErrorResponseDto.errResponseEntity(new CustomException(ErrorCode.INVALID_CONSTRAINTS));
+        String errorMsg = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
+        return ErrorResponseDto.errResponseEntity(new CustomException(ErrorCode.INVALID_CONSTRAINTS, errorMsg));
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     private ResponseEntity<ErrorResponseDto> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
-        return ErrorResponseDto.errResponseEntity(new CustomException(ErrorCode.INVALID_PARAMETER));
+        return ErrorResponseDto.errResponseEntity(new CustomException(ErrorCode.INVALID_PARAMETER, e.getMessage()));
     }
 }

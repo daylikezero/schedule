@@ -7,6 +7,7 @@ import com.example.schedule.exception.CustomException;
 import com.example.schedule.exception.ErrorCode;
 import com.example.schedule.repository.UserRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
@@ -40,6 +41,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAllUser();
     }
 
+    @Transactional
     @Override
     public UserResponseDto updateUser(Long id, UserRequestDto dto) {
         User user = validUser(id);
@@ -55,6 +57,7 @@ public class UserServiceImpl implements UserService {
         return new UserResponseDto(user);
     }
 
+    @Transactional
     @Override
     public void deleteUser(Long id) {
         validUser(id);
