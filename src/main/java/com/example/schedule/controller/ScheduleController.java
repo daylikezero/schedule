@@ -4,6 +4,8 @@ import com.example.schedule.dto.ScheduleRequestDto;
 import com.example.schedule.dto.ScheduleResponseDto;
 import com.example.schedule.service.ScheduleService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -42,6 +44,10 @@ public class ScheduleController {
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터로 일정 목록 조회 시 실패")
     })
+    @Parameters({
+            @Parameter(name = "pageNo", description = "페이지 번호", example = "1"),
+            @Parameter(name = "size", description = "페이지 크기", example = "10")
+    })
     public ResponseEntity<List<ScheduleResponseDto>> findAllSchedules(@RequestParam(required = false) Integer pageNo,
                                                                       @RequestParam(required = false) Integer size,
                                                                       @RequestBody ScheduleRequestDto dto) {
@@ -54,6 +60,7 @@ public class ScheduleController {
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 일정 ID 조회 시 실패")
     })
+    @Parameter(name = "id", description = "일정 ID", example = "1")
     public ResponseEntity<ScheduleResponseDto> findScheduleById(@PathVariable Long id) {
         return new ResponseEntity<>(scheduleService.findScheduleById(id), HttpStatus.OK);
     }
@@ -65,6 +72,7 @@ public class ScheduleController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터로 일정 수정 시 실패"),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 일정 ID 수정 시 실패")
     })
+    @Parameter(name = "id", description = "일정 ID", example = "1")
     public ResponseEntity<ScheduleResponseDto> updateSchedule(@PathVariable Long id, @RequestBody @Valid ScheduleRequestDto dto) {
         return new ResponseEntity<>(scheduleService.updateSchedule(id, dto), HttpStatus.OK);
     }
@@ -75,6 +83,7 @@ public class ScheduleController {
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 일정 ID 삭제 시 실패")
     })
+    @Parameter(name = "id", description = "일정 ID", example = "1")
     public ResponseEntity<Void> deleteSchedule(@PathVariable Long id, @RequestBody ScheduleRequestDto dto) {
         scheduleService.deleteSchedule(id, dto);
         return new ResponseEntity<>(HttpStatus.OK);
