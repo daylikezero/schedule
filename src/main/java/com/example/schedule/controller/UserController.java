@@ -4,6 +4,7 @@ import com.example.schedule.dto.UserRequestDto;
 import com.example.schedule.dto.UserResponseDto;
 import com.example.schedule.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -41,6 +42,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 유저 ID 조회 시 실패")
     })
+    @Parameter(name = "id", description = "유저 ID", example = "1")
     public ResponseEntity<UserResponseDto> findUserById(@PathVariable Long id) {
         return new ResponseEntity<>(userService.findUserById(id), HttpStatus.OK);
     }
@@ -61,6 +63,7 @@ public class UserController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터로 유저 수정 시 실패"),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 유저 ID 수정 시 실패")
     })
+    @Parameter(name = "id", description = "유저 ID", example = "1")
     public ResponseEntity<UserResponseDto> updateUser(@PathVariable Long id, @RequestBody @Valid UserRequestDto dto) {
         return new ResponseEntity<>(userService.updateUser(id, dto), HttpStatus.OK);
     }
@@ -71,6 +74,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 유저 ID 삭제 시 실패")
     })
+    @Parameter(name = "id", description = "유저 ID", example = "1")
     public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return new ResponseEntity<>(HttpStatus.OK);
