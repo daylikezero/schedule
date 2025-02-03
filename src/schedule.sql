@@ -1,5 +1,14 @@
+-- 데이터베이스 생성
+CREATE DATABASE IF NOT EXISTS `schedule`;
 USE schedule;
 
+-- 데이터베이스 유저 생성
+CREATE USER IF NOT EXISTS `sa`@`localhost` IDENTIFIED BY 'sparta';
+CREATE USER IF NOT EXISTS `sa`@`%` IDENTIFIED BY 'sparta';
+GRANT ALL PRIVILEGES ON `schedule`.* TO `sa`@`localhost`;
+GRANT ALL PRIVILEGES ON `schedule`.* TO `sa`@`%`;
+
+-- 테이블 생성 (유저)
 CREATE TABLE user
 (
     id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '유저 식별자',
@@ -10,6 +19,7 @@ CREATE TABLE user
     mod_date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '수정일'
 );
 
+-- 테이블 생성 (일정)
 CREATE TABLE schedule
 (
     id BIGINT AUTO_INCREMENT PRIMARY KEY COMMENT '일정 식별자',
