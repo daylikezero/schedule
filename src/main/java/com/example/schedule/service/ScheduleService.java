@@ -2,6 +2,7 @@ package com.example.schedule.service;
 
 import com.example.schedule.dto.ScheduleRequestDto;
 import com.example.schedule.dto.ScheduleResponseDto;
+import com.example.schedule.dto.UpdateScheduleRequestDto;
 
 import java.util.List;
 
@@ -12,7 +13,7 @@ public interface ScheduleService {
 
     ScheduleResponseDto findScheduleById(Long id);
 
-    ScheduleResponseDto updateSchedule(Long id, ScheduleRequestDto dto);
+    ScheduleResponseDto updateSchedule(Long id, UpdateScheduleRequestDto dto);
 
-    void deleteSchedule(Long id, ScheduleRequestDto dto);
+    void deleteSchedule(Long id, UpdateScheduleRequestDto dto);
 }

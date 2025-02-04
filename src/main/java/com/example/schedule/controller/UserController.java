@@ -32,7 +32,7 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "성공"),
             @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터로 유저 생성 시 실패")
     })
-    public ResponseEntity<UserResponseDto> saveUser(@RequestBody @Valid UserRequestDto dto) {
+    public ResponseEntity<UserResponseDto> saveUser(@Valid @RequestBody UserRequestDto dto) {
         return new ResponseEntity<>(userService.saveUser(dto), HttpStatus.OK);
     }
 
@@ -64,7 +64,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "존재하지 않는 유저 ID 수정 시 실패")
     })
     @Parameter(name = "id", description = "유저 ID", example = "1")
-    public ResponseEntity<UserResponseDto> updateUser(@PathVariable Long id, @RequestBody @Valid UserRequestDto dto) {
+    public ResponseEntity<UserResponseDto> updateUser(@PathVariable Long id, @Valid @RequestBody UserRequestDto dto) {
         return new ResponseEntity<>(userService.updateUser(id, dto), HttpStatus.OK);
     }
 

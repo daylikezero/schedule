@@ -2,6 +2,7 @@ package com.example.schedule.controller;
 
 import com.example.schedule.dto.ScheduleRequestDto;
 import com.example.schedule.dto.ScheduleResponseDto;
+import com.example.schedule.dto.UpdateScheduleRequestDto;
 import com.example.schedule.service.ScheduleService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -34,7 +35,7 @@ public class ScheduleController {
             @ApiResponse(responseCode = "400", description = "잘못된 요청 데이터로 일정 생성 시 실패"),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 유저 ID 일정 생성 시 실패")
     })
-    public ResponseEntity<ScheduleResponseDto> saveSchedule(@RequestBody @Valid ScheduleRequestDto dto) {
+    public ResponseEntity<ScheduleResponseDto> saveSchedule(@Valid @RequestBody ScheduleRequestDto dto) {
         return new ResponseEntity<>(scheduleService.saveSchedule(dto), HttpStatus.OK);
     }
 
@@ -73,7 +74,7 @@ public class ScheduleController {
             @ApiResponse(responseCode = "404", description = "존재하지 않는 일정 ID 수정 시 실패")
     })
     @Parameter(name = "id", description = "일정 ID", example = "1")
-    public ResponseEntity<ScheduleResponseDto> updateSchedule(@PathVariable Long id, @RequestBody @Valid ScheduleRequestDto dto) {
+    public ResponseEntity<ScheduleResponseDto> updateSchedule(@PathVariable Long id, @Valid @RequestBody UpdateScheduleRequestDto dto) {
         return new ResponseEntity<>(scheduleService.updateSchedule(id, dto), HttpStatus.OK);
     }
 
@@ -84,7 +85,7 @@ public class ScheduleController {
             @ApiResponse(responseCode = "404", description = "존재하지 않는 일정 ID 삭제 시 실패")
     })
     @Parameter(name = "id", description = "일정 ID", example = "1")
-    public ResponseEntity<Void> deleteSchedule(@PathVariable Long id, @RequestBody ScheduleRequestDto dto) {
+    public ResponseEntity<Void> deleteSchedule(@PathVariable Long id, @Valid @RequestBody UpdateScheduleRequestDto dto) {
         scheduleService.deleteSchedule(id, dto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
