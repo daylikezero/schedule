@@ -2,6 +2,7 @@ package com.example.schedule.service;
 
 import com.example.schedule.dto.ScheduleRequestDto;
 import com.example.schedule.dto.ScheduleResponseDto;
+import com.example.schedule.dto.UpdateScheduleRequestDto;
 import com.example.schedule.entity.Schedule;
 import com.example.schedule.entity.User;
 import com.example.schedule.exception.CustomException;
@@ -42,7 +43,7 @@ public class ScheduleServiceImpl implements ScheduleService {
     @Override
     public List<ScheduleResponseDto> findAllSchedules(ScheduleRequestDto dto, Integer pageNo, Integer size) {
         Schedule schedule = new Schedule();
-        Paging paging = null;
+
         if (EmptyTool.notEmpty(dto.getAuthorId())) {
             try {
                 User user = userRepository.findUserById(dto.getAuthorId());
@@ -59,13 +60,17 @@ public class ScheduleServiceImpl implements ScheduleService {
             schedule.setModDate(localDateTime);
         }
 
+        return scheduleRepository.findAllSchedules(schedule, getPaging(pageNo, size));
+    }
+
+    private static Paging getPaging(Integer pageNo, Integer size) {
+        Paging paging = null;
         if (EmptyTool.notEmpty(pageNo) || EmptyTool.notEmpty(size)) {
             int pageNumber = pageNo == null ? 1 : pageNo;
             int pageSize = size == null ? 10 : size;
             paging = new Paging(pageNumber, pageSize);
         }
-
-        return scheduleRepository.findAllSchedules(schedule, paging);
+        return paging;
     }
 
     @Override
@@ -79,15 +84,16 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Transactional
     @Override
-    public ScheduleResponseDto updateSchedule(Long id, ScheduleRequestDto dto) {
-        if (EmptyTool.empty(dto.getAuthorId()) || !StringUtils.hasText(dto.getPassword())) {
-            throw new CustomException(ErrorCode.INVALID_PARAMETER);
+    public ScheduleResponseDto updateSchedule(Long id, UpdateScheduleRequestDto dto) {
+        Schedule schedule = validSchedule(id, dto.getPassword());
+        if (EmptyTool.notEmpty(dto.getTodo())) {
+            schedule.setTodo(dto.getTodo());
         }
-        User user = userRepository.findUserById(dto.getAuthorId());
 
-        Schedule schedule = validSchedule(id, dto);
-        schedule.setAuthorId(user.getId());
-        schedule.setTodo(dto.getTodo());
+        if (EmptyTool.notEmpty(dto.getAuthorId())) {
+            User user = userRepository.findUserById(dto.getAuthorId());
+            schedule.setAuthorId(user.getId());
+        }
 
         int updatedRow = scheduleRepository.updateSchedule(id, schedule);
         if (updatedRow == 0) {
@@ -99,25 +105,23 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Transactional
     @Override
-    public void deleteSchedule(Long id, ScheduleRequestDto dto) {
-        if (!StringUtils.hasText(dto.getPassword())) {
-            throw new CustomException(ErrorCode.INVALID_PARAMETER);
-        }
-
-        validSchedule(id, dto);
-
+    public void deleteSchedule(Long id, UpdateScheduleRequestDto dto) {
+        validSchedule(id, dto.getPassword());
         int deleteRow = scheduleRepository.deleteSchedule(id);
         if (deleteRow == 0) {
             throw new CustomException(ErrorCode.SCHEDULE_NOT_FOUND);
         }
     }
 
-    private Schedule validSchedule(Long id, ScheduleRequestDto dto) {
+    private Schedule validSchedule(Long id, String password) {
+        if (!StringUtils.hasText(password)) {
+            throw new CustomException(ErrorCode.INVALID_PARAMETER);
+        }
         Schedule schedule = scheduleRepository.findScheduleById(id);
         if (schedule.getIsDeleted()) {
             throw new CustomException(ErrorCode.ENTITY_DELETED, String.valueOf(id));
         }
-        if (!dto.getPassword().equals(schedule.getPassword())) {
+        if (!password.equals(schedule.getPassword())) {
             throw new CustomException(ErrorCode.PASSWORD_INCORRECT);
         }
         return schedule;

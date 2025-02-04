@@ -28,11 +28,11 @@ public class Schedule {
         this.password = password;
     }
 
-    public Schedule(Long id, String author, String todo, String password, Boolean isDeleted, LocalDateTime regDate, LocalDateTime modDate) {
+    public Schedule(Long id, Long authorId, String author, String todo, String password,
+                    Boolean isDeleted, LocalDateTime regDate, LocalDateTime modDate) {
+        this(authorId, todo, password);
         this.id = id;
         this.author = author;
-        this.todo = todo;
-        this.password = password;
         this.isDeleted = isDeleted;
         this.regDate = regDate;
         this.modDate = modDate;

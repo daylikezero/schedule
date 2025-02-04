@@ -80,7 +80,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     @Override
     public Schedule findScheduleById(Long id) {
         List<Schedule> result = jdbcTemplate.query(
-                "SELECT s.id, u.name author, s.todo, s.password, s.is_deleted, s.reg_date, s.mod_date " +
+                "SELECT s.id, s.author_id, u.name author, s.todo, s.password, s.is_deleted, s.reg_date, s.mod_date " +
                         "FROM schedule s " +
                         "JOIN user u ON s.author_id = u.id " +
                         "WHERE s.id = ?", scheduleRowMapper2(), id);
@@ -102,6 +102,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
     private RowMapper<Schedule> scheduleRowMapper2() {
         return (rs, rowNum) -> new Schedule(
                 rs.getLong("id"),
+                rs.getLong("author_id"),
                 rs.getString("author"),
                 rs.getString("todo"),
                 rs.getString("password"),
