@@ -61,7 +61,8 @@ public class ScheduleRepositoryImpl implements ScheduleRepository {
             params.add(dto.getAuthorId());
         }
         if (EmptyTool.notEmpty(dto.getModDate())) {
-            sql += " AND s.mod_date < ?";
+            sql += " AND s.mod_date BETWEEN ? AND ?";
+            params.add(dto.getModDate());
             params.add(dto.getModDate().plusDays(1));
         }
 
